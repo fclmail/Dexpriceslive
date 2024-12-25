@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current DEX Prices</title>
+    <style>
+        /* Style for the body */
+        body {
+            background-color: darkblue; /* Dark blue background */
+            color: white; /* White text color for better contrast */
+            font-family: Arial, sans-serif; /* Font style */
+            overflow: auto; /* Enable scrollbars */
+            position: absolute; /* Positioning */
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            border: 5px solid fluorescentblue; /* Fluorescent blue border */
+            box-sizing: border-box; /* Include border in width and height */
+        }
+
+        /* Style for the price table */
+        table {
+            width: 100%; /* Full width for the table */
+            border-collapse: collapse; /* Collapse borders */
+        }
+
+        th, td {
+            padding: 10px; /* Padding for table cells */
+            text-align: left; /* Align text to the left */
+            border-bottom: 1px solid white; /* Bottom border for rows */
+        }
+
+        /* Highlight the lowest price */
+        .lowest-price {
+            color: red; /* Red color for the lowest price */
+            font-weight: bold; /* Bold text */
+        }
+
+        /* Style for the date and time display */
+        #datetime {
+            margin: 20px; /* Margin for the date and time */
+            font-size: 18px; /* Font size */
+        }
+    </style>
+</head>
+<body>
+
+<h1>Current DEX Prices</h1>
+<div id="datetime"></div>
+<table id="priceTable">
+    <thead>
+        <tr>
+            <th>Exchange</th>
+            <th>Asset</th>
+            <th>Price (USD)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Prices will be dynamically inserted here -->
+    </tbody>
+</table>
+
+<script>
+    // Function to fetch prices from Chainlink oracles
+    async function fetchPrices() {
+        // Placeholder for price data
+        const prices = {
+            "Uniswap": {
+                "BTC": 0,
+                "WBTC": 0,
+                "ETH": 0,
+                "WETH": 0,
+                "SHIB": 0,
+                "DOGE": 0,
+                "XRP": 0,
+                "OKX": 0
+            },
+            "SushiSwap": {
+                "BTC": 0,
+                "WBTC": 0,
+                "ETH": 0,
+                "WETH": 0,
+                "SHIB": 0,
+                "DOGE": 0,
+                "XRP": 0,
+                "OKX": 0
+            },
+            "PancakeSwap": {
+                "BTC": 0,
+                "WBTC": 0,
+                "ETH": 0,
+                "WETH": 0,
+                "SHIB": 0,
+                "DOGE": 0,
+                "XRP": 0,
+                "OKX": 0
+            }
+        };
+
+        // Fetch prices from Chainlink oracles
+        // This is a placeholder for the actual Chainlink price fetch logic
+        // In a real implementation, you would use web3.js or ethers.js to interact with the blockchain and fetch prices
+
+        // Example static data for demonstration purposes
+        prices["Uniswap"]["BTC"] = 40000;
+        prices["Uniswap"]["ETH"] = 2500;
+        prices["SushiSwap"]["BTC"] = 39950;
+        prices["SushiSwap"]["ETH"] = 2490;
+        prices["PancakeSwap"]["BTC"] = 40020;
+        prices["PancakeSwap"]["ETH"] = 2505;
+
+        // Update the price table
+        updatePriceTable(prices);
+    }
+
+    // Function to update the price table
+    function updatePriceTable(prices) {
+        const tableBody = document.querySelector("#priceTable tbody");
+        tableBody.innerHTML = ""; // Clear previous data
+
+        // Iterate through exchanges and assets to populate the table
+        for (const exchange in prices) {
+            for (const asset in prices[exchange]) {
+                const price = prices[exchange][asset];
+                const row = document.createElement("tr");
+
+                // Create cells for exchange, asset, and price
+                const exchangeCell = document.createElement("td");
+                exchangeCell.textContent = exchange;
+                row.appendChild(exchangeCell);
+
+                const assetCell = document.createElement("td");
+                assetCell.textContent = asset;
+                row.appendChild(assetCell);
+
+                const priceCell = document.createElement("td");
+                priceCell.textContent = price;
+
+                // Check if this is the lowest price
+                if (isLowestPrice(prices, asset, price)) {
+                    priceCell.classList.add("lowest-price");
+                }
+
+                row.appendChild(priceCell);
+                tableBody.appendChild(row);
+            }
+        }
+    }
+
+    // Function to determine if the current price is the lowest for the asset
+    function isLowestPrice(prices, asset, currentPrice) {
+        let lowestPrice = Infinity;
+        for (const exchange in prices) {
+            if (prices[exchange][asset] < lowestPrice) {
+                lowestPrice = prices[exchange][asset];
+            }
+        }
+        return currentPrice === lowestPrice;
+    }
+
+    // Function to update the current date and time
+    function updateDateTime() {
+        const now = new Date();
+        const datetimeElement = document.getElementById("datetime");
+        datetimeElement.textContent = now.toLocaleString(); // Format date and time
+    }
+
+    // Function to update prices and date/time every 2 seconds
+    function updateData() {
+        fetchPrices(); // Fetch prices
+        updateDateTime(); // Update date and time
+    }
+
+    // Set interval to update data every 2 seconds
+    setInterval(updateData, 2000);
+    updateData(); // Initial call to populate data immediately
+</script>
+
+</body>
+</html>
